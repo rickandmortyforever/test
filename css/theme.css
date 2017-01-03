@@ -19,7 +19,7 @@ h1,h2,h3,h4,h5,h6 {
 	max-width:960px;
 	margin:0px auto;
 }
-a,a:hover {
+a,a:hover, a:focus {
 	color:#cc580c;
 	text-decoration: none;
 }
@@ -146,7 +146,7 @@ img {max-width: 100%;}
 }
 /*---------------------------------------------------- 	Intro------------------------------------------------------*/
 header {
-	padding-bottom:50px;
+	/*padding-bottom:50px;*/
 }
 .intro {
 	font-family:'Playball',cursive;

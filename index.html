@@ -29,9 +29,25 @@
 <link href='http://fonts.googleapis.com/css?family=Playball' rel='stylesheet' type='text/css'>
 
 <style>
-	img {
-	    width: 100%;
-	    height: auto;
+	nav.fixy {
+	  margin     : 0 auto;
+	  background-color: rgba(midnightblue, .85);
+	}
+	.fixed {
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    right: 0;
+	    z-index: 100;
+	    border-radius: 0;
+	    box-shadow: 2px 2px 4px 1px rgba(180, 180, 180, 0.45);
+	}
+	.fixed:before {
+	  display: block;
+	  position: absolute;
+	  /*content: "I'm Fixed";*/
+	  color: rgb(255, 239, 0);
+	  right: 1em;
 	}
 </style>
 
@@ -52,7 +68,8 @@
 			</div>
 		</div>
 	</div>	
-	<div class="menu">
+	</header>
+	<nav class="fixy" id="fixy">
 		<ul class="nav navbar-nav" style="padding-top:15px; padding-bottom:15px; background: #111; color: #c3c8d6; font-family: 'Open Sans',sans-serif; font-size: 14px; font-weight: 600; text-transform: uppercase;">
 			<li class="menuItem active"><a href="#wrapper">Home</a></li>
 			<li class="menuItem"><a href="#aboutus">About Us</a></li>
@@ -61,8 +78,8 @@
 			<li class="menuItem"><a href="#feedback">News</a></li>
 			<li class="menuItem"><a href="#contact">Contact Us</a></li>
 		</ul>
-	</div>	
-	</header>
+	</nav>
+	<div class="scrolly"></div>	
 		
 	<!--about us-->
 	<section class="aboutus" id="aboutus">
@@ -708,37 +725,30 @@ Histats.track_hits();} catch(err){};
 
 
 <script type="text/javascript">
-jQuery(function($) {
-	$(document).ready( function() {
-	  // Create a clone of the menu, right next to original.
-		$('.menu').addClass('original').clone().insertAfter('.menu').addClass('cloned').css('position','fixed').css('top','0').css('margin-top','0').css('z-index','500').removeClass('original').hide();
+	document.addEventListener("DOMContentLoaded", function(event) {
+	  var fixy = document.getElementById("fixy");
+	  var fixy_distance_top = fixy.offsetTop;
+	  var fixy_height = parseFloat(fixy.clientHeight);
+	  var previous_sibling_margin_bottom = parseFloat(window.getComputedStyle(fixy.previousElementSibling,null).getPropertyValue("margin-bottom"));
+	  window.onscroll = function() {
+	    console.log(this.document.documentElement.scrollTop);
+	    var scrolly = document.documentElement.scrollTop || document.body.scrollTop;
+	    fixy_height_push = fixy_height + previous_sibling_margin_bottom ;
+			if ( scrolly >= fixy.offsetTop &! fixy.classList.contains("fixed") ) {
+	            fixy_distance_top = fixy.offsetTop;
+				// replace previous_sibling_margin_bottom with fixy_height_push
+				fixy.previousElementSibling.style.marginBottom = fixy_height_push+"px" ;
+				fixy.classList.toggle("fixed");
+			}
+			else if ( scrolly <= fixy_distance_top && fixy.classList.contains("fixed") ) {
+	            fixy_distance_top = fixy.offsetTop;
+				// replace fixy_height_push with previous_sibling_margin_bottom
+				fixy.previousElementSibling.style.marginBottom = "" ;
+				fixy.classList.toggle("fixed");
+			}
 
-		scrollIntervalID = setInterval(stickIt, 10);
-
-
-		function stickIt() {
-
-		  var orgElementPos = $('.original').offset();
-		  orgElementTop = orgElementPos.top;               
-
-		  if ($(window).scrollTop() >= (orgElementTop)) {
-		    // scrolled past the original position; now only show the cloned, sticky element.
-
-		    // Cloned element should always have same left position and width as original element.     
-		    orgElement = $('.original');
-		    coordsOrgElement = orgElement.offset();
-		    leftOrgElement = coordsOrgElement.left;  
-		    widthOrgElement = orgElement.css('width');
-		    $('.cloned').css('left',leftOrgElement+'px').css('top',0).css('width',widthOrgElement).show();
-		    $('.original').css('visibility','hidden');
-		  } else {
-		    // not scrolled past the menu; only show the original menu.
-		    $('.cloned').hide();
-		    $('.original').css('visibility','visible');
-		  }
-		}
+		};
 	});
-});
-</script>
+	</script>
 </body>
 </html>
